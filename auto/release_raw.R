@@ -38,7 +38,7 @@ to_be_released_nflverse_id <- to_be_released$nflverse_id
 saved_files <- purrr::map2(
   to_be_released_nflapi_id,
   to_be_released_nflverse_id,
-  save_raw_pbp,
+  nflverseraw::save_raw_pbp,
   filepath = temp_dir
 )
 
@@ -47,7 +47,7 @@ file_df <- purrr::list_rbind(saved_files)
 seasons_to_release <- unique(file_df$season)
 
 # UPLOAD NEW FILES TO RELATED RELEASES
-purrr::walk(seasons_to_release, release_raw_pbp, file_df = file_df)
+purrr::walk(seasons_to_release, nflverseraw::release_raw_pbp, file_df = file_df)
 
 # NOW UPDATE THE RELEASED GAMES CSV
 updated_released_g <- released_g |>
