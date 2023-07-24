@@ -23,3 +23,5 @@ Remotes:
     nflverse/nflapi,
     nflverse/nflversedata,
     nflverse/nflreadr
+URL: https://github.com/nflverse/nflverseraw
+BugReports: https://github.com/nflverse/nflverseraw/issues
