@@ -37,6 +37,6 @@ save_raw_pbp <- function(game_nflapi_id, game_nflverse_id, filepath){
     game_id = game_nflverse_id,
     season = season,
     rds_path = rds_path,
-    json_path = json_path
+    json_path = paste0(json_path, ".gz")
   )
 }
