@@ -10,7 +10,7 @@
 #' @examples
 release_raw_pbp <- function(season, file_df, .token = gh::gh_token()){
   # FILTER file_df DOWN TO FILES OF season
-  file_names <- file_df[season == season, c("rds_path", "json_path")] |>
+  file_names <- file_df[file_df$season == season, c("rds_path", "json_path")] |>
     unlist(use.names = FALSE)
 
   # CREATE RELEASE TAG BASED OFF SEASON.
