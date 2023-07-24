@@ -1,3 +1,13 @@
+#' Title
+#'
+#' @param season
+#' @param file_df
+#' @param .token
+#'
+#' @return
+#' @export
+#'
+#' @examples
 release_raw_pbp <- function(season, file_df, .token = gh::gh_token()){
   # FILTER file_df DOWN TO FILES OF season
   file_names <- file_df[season == season, c("rds_path", "json_path")] |>
