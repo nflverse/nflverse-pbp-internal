@@ -1,0 +1,38 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  schedule:
+    # Runs every 15 minutes from September through February
+    - cron:  '15/15 * * 1,2,9-12 *'
+
+name: Release-RAW-PBP
+
+jobs:
+  update:
+    name: update_pbp
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.NFLVERSE_GH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: r-lib/actions/setup-r@v2
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            nflverse/nflapi
+            nflverse/nflverse-data
+            nflverse/nflreadr
+            ropensci/piggyback
+
+      - name: Run raw pbp update
+        run: Rscript -e 'source("auto/release_raw.R")'
+
+      - name: Commit released games
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git pull
+          git add released_games.csv
+          git commit -m "Update released games `date`" || echo "No changes to commit"
+          git push || echo "No changes to commit"

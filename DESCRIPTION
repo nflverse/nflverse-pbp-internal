@@ -21,7 +21,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Remotes: 
     nflverse/nflapi,
-    nflverse/nflversedata,
+    nflverse/nflverse-data,
     nflverse/nflreadr
 URL: https://github.com/nflverse/nflverseraw
 BugReports: https://github.com/nflverse/nflverseraw/issues
