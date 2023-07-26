@@ -1,6 +1,5 @@
 # CODE TO CREATE THE RELEASED GAMES CSV
 
-
 # Set Data Repo -----------------------------------------------------------
 datarepo <- "nflverse/nflverse-data"
 
@@ -35,10 +34,13 @@ data.table::fwrite(games, "released_games.csv")
 # This section doesn't need to run to create the file. Just some checks what's
 # missing
 released_games <- nflreadr::load_schedules() |>
-  dplyr::filter(game_id %in% games)
+  dplyr::filter(game_id %in% games$game_id)
 
+# The only game IDs that should be missing are
+# 2000_03_SD_KC and 2000_06_BUF_MIA. We never managed to get those.
+# nflfastR skips these IDs
 missing_games <- nflreadr::load_schedules() |>
-  dplyr::filter(!game_id %in% games, !is.na(result))
+  dplyr::filter(!game_id %in% games$game_id, !is.na(result))
 
 missing_games |> dplyr::count(season)
 
