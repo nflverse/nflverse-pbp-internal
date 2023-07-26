@@ -33,6 +33,10 @@ save_raw_pbp <- function(game_nflapi_id, game_nflverse_id, filepath){
   json_path <- file.path(save_path, paste0(game_nflverse_id, ".json"))
   jsonlite::write_json(raw_pbp, json_path)
   system(paste("gzip", json_path))
+
+  # PRINT MESSAGE FOR DEBUGGING
+  cli::cli_alert_success("Saved {game_nflverse_id}")
+
   data.frame(
     game_id = game_nflverse_id,
     season = season,

@@ -27,33 +27,40 @@ if(nrow(to_be_released) > 50){
                  Direct your complaints to Seb!")
 }
 
-# WE'LL SAVE IN A TEMP DIRECTORY
-temp_dir <- tempdir(check = TRUE)
+# ONLY DO SOMETHING IF THERE ARE GAMES TO BE RELEASED
+if(nrow(to_be_released) > 0){
+  cli::cli_alert_info("Going to release {nrow(to_be_released)} game{?s}.")
 
-# WE NEED BOTH NFLAPI GAME ID AND NFLVERSE GAME ID
-to_be_released_nflapi_id <- to_be_released$gamedetail
-to_be_released_nflverse_id <- to_be_released$nflverse_id
+  # WE'LL SAVE IN A TEMP DIRECTORY
+  temp_dir <- tempdir(check = TRUE)
 
-# LOOP OVER GAMES
-saved_files <- purrr::map2(
-  to_be_released_nflapi_id,
-  to_be_released_nflverse_id,
-  nflverseraw::save_raw_pbp,
-  filepath = temp_dir
-)
+  # WE NEED BOTH NFLAPI GAME ID AND NFLVERSE GAME ID
+  to_be_released_nflapi_id <- to_be_released$gamedetail
+  to_be_released_nflverse_id <- to_be_released$nflverse_id
 
-# THIS DF LISTS NFLVERSE GAME ID, SEASON, AND RAW PBP PATHS
-file_df <- purrr::list_rbind(saved_files)
-seasons_to_release <- unique(file_df$season)
+  # LOOP OVER GAMES
+  saved_files <- purrr::map2(
+    to_be_released_nflapi_id,
+    to_be_released_nflverse_id,
+    nflverseraw::save_raw_pbp,
+    filepath = temp_dir
+  )
 
-# UPLOAD NEW FILES TO RELATED RELEASES
-purrr::walk(seasons_to_release, nflverseraw::release_raw_pbp, file_df = file_df)
+  # THIS DF LISTS NFLVERSE GAME ID, SEASON, AND RAW PBP PATHS
+  file_df <- purrr::list_rbind(saved_files)
+  seasons_to_release <- unique(file_df$season)
 
-# NOW UPDATE THE RELEASED GAMES CSV
-updated_released_g <- released_g |>
-  dplyr::bind_rows(c(game_id = to_be_released_nflverse_id)) |>
-  dplyr::arrange(dplyr::desc(game_id))
+  # UPLOAD NEW FILES TO RELATED RELEASES
+  purrr::walk(seasons_to_release, nflverseraw::release_raw_pbp, file_df = file_df)
 
-data.table::fwrite(updated_released_g, "released_games.csv")
+  # NOW UPDATE THE RELEASED GAMES CSV
+  updated_released_g <- released_g |>
+    dplyr::bind_rows(c(game_id = to_be_released_nflverse_id)) |>
+    dplyr::arrange(dplyr::desc(game_id))
 
-# COMMIT AND PUSH THE CSV IN SCRIPT?
+  # COMMIT AND PUSH THE CSV IN THE GH ACTION
+  data.table::fwrite(updated_released_g, "released_games.csv")
+
+  # CLEAR TEMP DIRECTORY
+  unlink(temp_dir, recursive = TRUE)
+}

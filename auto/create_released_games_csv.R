@@ -1,4 +1,6 @@
 # CODE TO CREATE THE RELEASED GAMES CSV
+# ONLY RUN IF YOU KNOW WHAT YOU ARE DOING
+# written by Seb, 2023-07-26
 
 # Set Data Repo -----------------------------------------------------------
 datarepo <- "nflverse/nflverse-data"

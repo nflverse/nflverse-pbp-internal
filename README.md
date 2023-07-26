@@ -6,4 +6,4 @@ package and releases them into nflverse releases.
 
 nflfastR uses these raw pbp to create the nflfastR pbp dataset. 
 
-Code in `/auto/` runs automatically in a gh actuion. 
+Code in `/auto/` runs automatically in a gh action. 
