@@ -21,6 +21,7 @@ release_raw_pbp <- function(season, file_df, .token = gh::gh_token()){
   nflversedata::nflverse_upload(
     file_names,
     tag = release_tag,
+    repo = "nflverse/nflverse-pbp",
     .token = .token
   )
 }
