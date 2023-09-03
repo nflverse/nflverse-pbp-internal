@@ -1,9 +1,10 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
-  schedule:
+  workflow_dispatch:
+  # schedule:
     # Runs every 15 minutes from September through February
-    - cron:  '15/15 * * 1,2,9-12 *'
+   #  - cron:  '15/15 * * 1,2,9-12 *'
 
 name: Release-RAW-PBP
 
