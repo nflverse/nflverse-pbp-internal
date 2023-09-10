@@ -34,8 +34,9 @@ if(nrow(to_be_released) > 0){
   # WE'LL SAVE IN A TEMP DIRECTORY
   temp_dir <- tempdir(check = TRUE)
 
-  # WE NEED BOTH NFLAPI GAME ID AND NFLVERSE GAME ID
-  to_be_released_nflapi_id <- to_be_released$gamedetail
+  # WE NEED BOTH NFLAPI GAME ID AND NFLVERSE GAME ID 
+  # to_be_released_nflapi_id <- to_be_released$gamedetail
+  to_be_released_nflapi_id <- to_be_released$v1_api_id
   to_be_released_nflverse_id <- to_be_released$nflverse_id
 
   # LOOP OVER GAMES
