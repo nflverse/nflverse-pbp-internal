@@ -34,7 +34,7 @@ if(nrow(to_be_released) > 0){
   # WE'LL SAVE IN A TEMP DIRECTORY
   temp_dir <- tempdir(check = TRUE)
 
-  # WE NEED BOTH NFLAPI GAME ID AND NFLVERSE GAME ID 
+  # WE NEED BOTH NFLAPI GAME ID AND NFLVERSE GAME ID
   # to_be_released_nflapi_id <- to_be_released$gamedetail
   to_be_released_nflapi_id <- to_be_released$v1_api_id
   to_be_released_nflverse_id <- to_be_released$nflverse_id
@@ -56,7 +56,7 @@ if(nrow(to_be_released) > 0){
 
   # NOW UPDATE THE RELEASED GAMES CSV
   updated_released_g <- released_g |>
-    dplyr::bind_rows(c(game_id = to_be_released_nflverse_id)) |>
+    dplyr::bind_rows(data.frame(game_id = to_be_released_nflverse_id)) |>
     dplyr::arrange(dplyr::desc(game_id))
 
   # COMMIT AND PUSH THE CSV IN THE GH ACTION
