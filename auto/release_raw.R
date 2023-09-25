@@ -1,6 +1,12 @@
 # CURRENT SEASON
 seasons <- nflreadr::most_recent_season(roster = FALSE)
 
+# ENVIRONMENT VARIABLE FOR REFRESHING RAW PBP
+# TO INCORPORATE STAT CORRECTIONS
+# WE SET THE VALUE OF THIS VARIABLE IN THE REFRESH RAW PBP WORKFLOW
+# IT DEFAULTS TO 16 = MAX NUMBER OF GAMES IN 1 WEEK
+refresh_n_latest_games <- as.integer(Sys.getenv("_REFRESH_N_LATEST_GAMES_", NA))
+
 # LOAD GAMES FOR API GAME IDS
 g <-
   purrr::map(seasons, function(s){
@@ -17,13 +23,24 @@ finished_g <- g |>
 released_g <- data.table::fread("released_games.csv")
 
 # COMPUTE IDs THAT NEED RELEASE
-to_be_released <- finished_g |> dplyr::filter(!nflverse_id %in% released_g$game_id)
+if (is.na(refresh_n_latest_games)) {
+  # THIS RUNS IN THE RELEASE RAW PBP WORKFLOW
+  # WE LOAD FINISHED AND UNRELEASED GAMES
+  to_be_released <- finished_g |> dplyr::filter(!nflverse_id %in% released_g$game_id)
+} else {
+  # THIS RUNS ONCE A WEEK IN THE REFRESH RAW PBP WORKFLOW
+  # WE REFRESH ALREADY RELEASED GAMES
+  to_be_released <- finished_g |>
+    dplyr::filter(nflverse_id %in% released_g$game_id) |>
+    dplyr::slice_tail(n = refresh_n_latest_games)
+}
 
 # Normally there shouldn't be more than 16 games to release. Since the code is heavy
 # we check here for a large number and error to rigger manual inspection
-if(nrow(to_be_released) > 50){
+game_limit <- ifelse(!is.na(refresh_n_latest_games), refresh_n_latest_games, 50L)
+if(nrow(to_be_released) > game_limit){
   cli::cli_abort("Y'all messed something up. It's better not to\
-                 automatically update {nrow(to_be_released)} games.\
+                 automatically update {nrow(to_be_released)} game{?s}.\
                  Direct your complaints to Seb!")
 }
 
@@ -57,11 +74,17 @@ if(nrow(to_be_released) > 0){
   # NOW UPDATE THE RELEASED GAMES CSV
   updated_released_g <- released_g |>
     dplyr::bind_rows(data.frame(game_id = to_be_released_nflverse_id)) |>
-    dplyr::arrange(dplyr::desc(game_id))
+    dplyr::arrange(dplyr::desc(game_id)) |>
+    dplyr::distinct()
 
   # COMMIT AND PUSH THE CSV IN THE GH ACTION
-  data.table::fwrite(updated_released_g, "released_games.csv")
+  # (NO COMMIT OR PUSH IN THE REFRESH WORKFLOW)
+  if (is.na(refresh_n_latest_games)){
+    data.table::fwrite(updated_released_g, "released_games.csv")
+  }
 
   # CLEAR TEMP DIRECTORY
-  unlink(temp_dir, recursive = TRUE)
+  if (!interactive()) unlink(temp_dir, recursive = TRUE)
+} else {
+  cli::cli_alert_info("No new games to release!")
 }

@@ -1,0 +1,38 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  schedule:
+    # Runs at 02:00AM UTC on Wednesday from September through February
+    - cron:  '0 2 * 1,2,9-12 3'
+  workflow_dispatch:
+    inputs:
+      games_to_refresh:
+        description: 'Number of latest games to refresh'
+        required: false
+        default: 16
+        type: number
+
+name: REFRESH-RAW-PBP
+
+jobs:
+  update:
+    name: refresh_raw_pbp
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.NFLVERSE_GH_TOKEN }}
+      _REFRESH_N_LATEST_GAMES_: ${{ inputs.games_to_refresh || '16' }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: r-lib/actions/setup-r@v2
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            local::.
+            nflverse/nflapi
+            nflverse/nflverse-data
+            nflverse/nflreadr
+            ropensci/piggyback
+
+      - name: Run raw pbp update
+        run: Rscript -e 'source("auto/release_raw.R")'
