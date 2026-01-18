@@ -25,6 +25,7 @@ jobs:
             nflverse/nflapi
             nflverse/nflverse-data
             nflverse/nflreadr
+            qsbase/qs
 
       - name: Run raw pbp update
         run: Rscript -e 'source("auto/release_raw.R")'
