@@ -4,7 +4,13 @@
 \alias{save_raw_pbp}
 \title{Query PBP FROM NFL API AND SAVE LOCALLY}
 \usage{
-save_raw_pbp(game_nflapi_id, game_nflverse_id, filepath)
+save_raw_pbp(
+  game_nflapi_id,
+  game_nflverse_id,
+  filepath,
+  p = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{game_nflapi_id}{The game id of the nfl api}
