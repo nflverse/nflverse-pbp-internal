@@ -42,9 +42,9 @@ save_raw_pbp <- function(
   saveRDS(raw_pbp, rds_path)
 
   # SAVE RAW PBP AS JSON AND GZIP IT
-  json_path <- file.path(save_path, paste0(game_nflverse_id, ".json"))
-  jsonlite::write_json(raw_pbp, json_path)
-  system(paste("gzip", json_path))
+  # json_path <- file.path(save_path, paste0(game_nflverse_id, ".json"))
+  # jsonlite::write_json(raw_pbp, json_path)
+  # system(paste("gzip", json_path))
 
   # PRINT MESSAGE FOR DEBUGGING
   if (verbose) {
@@ -58,7 +58,7 @@ save_raw_pbp <- function(
   data.frame(
     game_id = game_nflverse_id,
     season = season,
-    rds_path = rds_path,
-    json_path = paste0(json_path, ".gz")
+    rds_path = rds_path
+    # json_path = paste0(json_path, ".gz")
   )
 }
