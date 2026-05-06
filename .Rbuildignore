@@ -3,3 +3,5 @@
 ^auto$
 ^released_games\.csv$
 ^\.github$
+^\.positai$
+^\.claude$
