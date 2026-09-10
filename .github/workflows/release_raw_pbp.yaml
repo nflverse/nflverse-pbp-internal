@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     # Runs every 15 minutes from September through February
-    - cron:  '15/15 * * 1,2,9-12 *'
+    - cron:  '17/15 * * 1,2,9-12 *'
 
 name: Release-RAW-PBP
 
